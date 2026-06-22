@@ -1,0 +1,6 @@
+{
+  "name": "Unreal Motion Tracker",
+  "description": "Interactive motion tracking, distortion mapping, camera solving, and UE5 python export script generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
