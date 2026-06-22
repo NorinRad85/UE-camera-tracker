@@ -291,6 +291,9 @@ export default function App() {
   const [spawnCameraInActiveLevel, setSpawnCameraInActiveLevel] = useState<boolean>(true);
   const [spawnBackplateInActiveLevel, setSpawnBackplateInActiveLevel] = useState<boolean>(true);
 
+  // Toggle state to view Unreal instructions or WebApp install instructions
+  const [instructionTab, setInstructionTab] = useState<'unreal' | 'webapp'>('unreal');
+
   // Auto-detect config based on path
   const getAutoDetectedSettings = (pathStr: string) => {
     const filename = pathStr.toLowerCase();
@@ -1255,37 +1258,98 @@ export default function App() {
 
         {/* Detailed step-by-step UE5 system instructions / readme drawer */}
         <section className="bg-[#1b1b1b] border border-[#3a3a3a] rounded-sm p-4">
-          <div className="flex items-center space-x-2 pb-2.5 border-b border-[#3a3a3a]">
-            <Code2 className="w-4 h-4 text-[#0078D7]" />
-            <span className="text-xs font-bold text-white uppercase tracking-wider font-sans">
-              UNREAL ENGINE 5.7 BRIDGE INSTALL & INTEGRATION MANUAL
-            </span>
-          </div>
-          <div className="text-[11px] text-slate-400 font-sans mt-3 space-y-3">
-            <p className="font-medium">
-              Find below the system integration instructions to copy and build files into your custom local UE5 project directory layout:
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3" id="bridge_instructions_cards">
-              <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
-                <span className="font-mono text-[#0078D7] text-[10px] font-bold">01. COPY THE PY FILE</span>
-                <p className="text-slate-500 leading-normal font-medium text-[10px]">
-                  Copy the generated Python script code and save it in your local folder: <code className="text-[#ccc] px-1 py-0.5 rounded-sm bg-[#222] border border-[#333]">Content/Python/import_tracker_data.py</code>.
-                </p>
-              </div>
-              <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
-                <span className="font-mono text-[#0078D7] text-[10px] font-bold">02. ACTIVATE UE5 PYTHON</span>
-                <p className="text-slate-500 leading-normal font-medium text-[10px]">
-                  Verify Python developer scripts are active in editor. Enable <code className="text-[#ccc] px-1 py-0.5 rounded-sm bg-[#222] border border-[#333]">Python Editor Script Plugin</code> under Plugins settings.
-                </p>
-              </div>
-              <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
-                <span className="font-mono text-[#0078D7] text-[10px] font-bold">03. RUN TERMINAL CMD</span>
-                <p className="text-slate-500 leading-normal font-medium text-[10px]">
-                  Open Unreal log outputs panel, switch standard input line to Python, and execute: <code className="text-[#ccc] px-1 py-0.5 rounded-sm bg-[#222] border border-[#333]">import import_tracker_data</code>.
-                </p>
-              </div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between pb-2.5 border-b border-[#3a3a3a] gap-2">
+            <div className="flex items-center space-x-2">
+              <Code2 className="w-4 h-4 text-[#0078D7]" />
+              <span className="text-xs font-bold text-white uppercase tracking-wider font-sans">
+                {instructionTab === 'unreal' ? 'UNREAL ENGINE 5.7 BRIDGE MANUAL' : 'WEB APP LOCAL INSTALLATION GUIDE'}
+              </span>
+            </div>
+            
+            {/* Tab Toggles */}
+            <div className="flex bg-[#111] p-0.5 rounded border border-[#3a3a3a] self-start md:self-auto">
+              <button
+                onClick={() => setInstructionTab('unreal')}
+                className={`px-2.5 py-1 text-[10px] font-bold rounded-sm uppercase tracking-wider font-mono transition-all cursor-pointer ${
+                  instructionTab === 'unreal' 
+                    ? 'bg-[#0078D7] text-white' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                UE5 Integrator
+              </button>
+              <button
+                onClick={() => setInstructionTab('webapp')}
+                className={`px-2.5 py-1 text-[10px] font-bold rounded-sm uppercase tracking-wider font-mono transition-all cursor-pointer ${
+                  instructionTab === 'webapp' 
+                    ? 'bg-[#0078D7] text-white' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Local App Setup
+              </button>
             </div>
           </div>
+
+          {instructionTab === 'unreal' ? (
+            <div className="text-[11px] text-slate-400 font-sans mt-3 space-y-3">
+              <p className="font-medium">
+                Find below the system integration instructions to copy and build files into your custom local UE5 project directory layout:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3" id="bridge_instructions_cards">
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-[#0078D7] text-[10px] font-bold">01. COPY THE PY FILE</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Copy the generated Python script code and save it in your local folder: <code className="text-[#ccc] px-1 py-0.5 rounded-sm bg-[#222] border border-[#333]">Content/Python/import_tracker_data.py</code>.
+                  </p>
+                </div>
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-[#0078D7] text-[10px] font-bold">02. ACTIVATE UE5 PYTHON</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Verify Python developer scripts are active in editor. Enable <code className="text-[#ccc] px-1 py-0.5 rounded-sm bg-[#222] border border-[#333]">Python Editor Script Plugin</code> under Plugins settings.
+                  </p>
+                </div>
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-[#0078D7] text-[10px] font-bold">03. RUN TERMINAL CMD</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Open Unreal log outputs panel, switch standard input line to Python, and execute: <code className="text-[#ccc] px-1 py-0.5 rounded-sm bg-[#222] border border-[#333]">import import_tracker_data</code>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-[11px] text-slate-400 font-sans mt-3 space-y-3">
+              <p className="font-medium">
+                Commands to extract, configure, build, and deploy this React-Vite Motion Tracking solver suite on your local workstation:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3" id="webapp_instructions_cards">
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-emerald-400 text-[10px] font-bold">01. ENVIRONMENT</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Ensure <code className="text-[#ccc]">Node.js v18+</code> and <code className="text-[#ccc]">NPM</code> are ready. Clone or extract files into your desktop workspace path.
+                  </p>
+                </div>
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-emerald-400 text-[10px] font-bold">02. INSTALL</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Install application dependencies by executing inside root directory terminal: <code className="text-[#ccc] block px-1 py-0.5 mt-1 rounded-sm bg-[#222] border border-[#333] text-center font-mono">npm install</code>
+                  </p>
+                </div>
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-emerald-400 text-[10px] font-bold">03. DEV RUN</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Launch local development server pointing to your browser viewport: <code className="text-[#ccc] block px-1 py-0.5 mt-1 rounded-sm bg-[#222] border border-[#333] text-center font-mono">npm run dev</code>
+                  </p>
+                </div>
+                <div className="bg-[#151515] p-3 rounded-sm border border-[#3a3a3a] flex flex-col space-y-1">
+                  <span className="font-mono text-emerald-400 text-[10px] font-bold">04. PRODUCTION BUILD</span>
+                  <p className="text-slate-500 leading-normal font-medium text-[10px]">
+                    Generate highly optimized assets inside <code className="text-[#ccc]">dist/</code>: <code className="text-[#ccc] block px-1 py-0.5 mt-1 rounded-sm bg-[#222] border border-[#333] text-center font-mono">npm run build</code>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
       </main>
